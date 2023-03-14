@@ -6,6 +6,7 @@
 #define PRINCESS_GARDEN_SERVER_RESPONSEBUILDER_HPP
 
 #include <string>
+#include <type_traits>
 
 #include "drogon/drogon.h"
 
@@ -16,6 +17,8 @@ using namespace drogon;
 template <typename T>
 class ResponseBuilder
 {
+    using BodyType = std::remove_cvref_t<T>;
+
 public:
     ResponseBuilder() = default;
 
@@ -42,7 +45,7 @@ public:
 
     HttpResponsePtr build()
     {
-        auto body = ResponseBody<T>{
+        auto body = ResponseBody<BodyType>{
                 .code = code,
                 .data = responseJson,
                 .message = message,
@@ -63,7 +66,7 @@ public:
 
 private:
     HttpStatusCode code{};
-    T responseJson;
+    BodyType responseJson;
     std::string message;
 };
 
