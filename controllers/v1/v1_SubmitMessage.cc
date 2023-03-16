@@ -2,7 +2,6 @@
 
 using namespace v1;
 
-// Add definition of your processing function here
 Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResponsePtr&)> callback)
 {
     const auto clientPtr = app().getDbClient();
@@ -24,10 +23,13 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
             co_return;
         }
 
+        const auto nowTimeString = getTimeString();
         const auto result = co_await clientPtr->execSqlCoro(
-                "INSERT INTO messages (author, content, time) VALUES ($1, $2, LOCALTIMESTAMP(0))", author, content);
+                "INSERT INTO messages (author, content, time) VALUES ($1, $2, LOCALTIMESTAMP(0)) RETURNING id",
+                author,
+                content);
         if (const auto affectedRows = result.affectedRows();
-                affectedRows > 0)
+                affectedRows > 0) [[likely]]
         {
             auto response = ResponseBuilder<decltype(affectedRows)>()
                     .setCode(HttpStatusCode::k200OK)
@@ -35,8 +37,20 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
                     .setMessage("success")
                     .build();
             callback(response);
+
+            const auto id = result.front()["id"].as<std::string>();
+            const auto insertedResult = co_await clientPtr->execSqlCoro(
+                    "INSERT INTO rewards (id, gain, time) VALUES ($1, $2, $3)",
+                    id,
+                    "53",   // todo: 这里需要计算出正确的数值
+                    nowTimeString
+            );
+            if (insertedResult.affectedRows() > 0)
+            {
+                LOG_DEBUG << "inserted!";
+            }
         }
-        else
+        else [[unlikely]]
         {
             auto response = ResponseBuilder<decltype(affectedRows)>()
                     .setCode(HttpStatusCode::k200OK)
@@ -57,4 +71,15 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
     }
 
     co_return;
+}
+
+std::string SubmitMessage::getTimeString()
+{
+    const auto now = std::chrono::system_clock::now();
+    const auto nowTimeT = std::chrono::system_clock::to_time_t(now);
+    const auto tm = *std::localtime(&nowTimeT);
+    std::ostringstream ss;
+    ss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+
+    return ss.str();
 }

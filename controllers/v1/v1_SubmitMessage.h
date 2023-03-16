@@ -1,6 +1,9 @@
 #pragma once
 
 #include <functional>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 #include <drogon/HttpController.h>
 
@@ -27,5 +30,7 @@ class SubmitMessage : public drogon::HttpController<SubmitMessage>
 
     static Task<> root(HttpRequestPtr req,
                        std::function<void(const HttpResponsePtr&)> callback);
+
+    static std::string getTimeString();
 };
 }
