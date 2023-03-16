@@ -8,6 +8,7 @@
 #include <drogon/HttpController.h>
 
 #include "ResponseBuilder.hpp"
+#include "ServiceDataProvider.hpp"
 
 using namespace drogon;
 

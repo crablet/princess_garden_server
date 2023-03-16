@@ -4,6 +4,18 @@ using namespace v1;
 
 Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResponsePtr&)> callback)
 {
+    if (co_await ServiceDataProvider::hasReachedTheMaximumGainOfToday())
+    {
+        auto response = ResponseBuilder<std::string>()
+                .setCode(HttpStatusCode::k418ImATeapot)
+                .setData("has reached to the maximum amount of today")
+                .setMessage("failed")
+                .build();
+        callback(response);
+
+        co_return;
+    }
+
     const auto clientPtr = app().getDbClient();
     try
     {
