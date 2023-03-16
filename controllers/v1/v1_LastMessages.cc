@@ -21,7 +21,7 @@ LastMessages::root([[maybe_unused]] HttpRequestPtr req, std::function<void(const
                         .id = row["id"].as<int>(),
                         .author = (row["author"].isNull() ? "null" : row["author"].as<std::string>()),
                         .content = row["content"].as<std::string>(),
-                        .time = row["content"].as<std::string>()
+                        .time = row["time"].as<std::string>()
                 };
                 resultVector.push_back(currentMessage);
             }
