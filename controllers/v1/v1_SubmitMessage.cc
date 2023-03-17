@@ -51,10 +51,11 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
             callback(response);
 
             const auto id = result.front()["id"].as<std::string>();
+            const auto gain = co_await ServiceDataProvider::getNextGain();
             const auto insertedResult = co_await clientPtr->execSqlCoro(
                     "INSERT INTO rewards (id, gain, time) VALUES ($1, $2, $3)",
                     id,
-                    "53",   // todo: 这里需要计算出正确的数值
+                    std::to_string(gain),
                     nowTimeString
             );
             if (insertedResult.affectedRows() > 0)
