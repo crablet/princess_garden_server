@@ -6,10 +6,10 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
 {
     if (co_await ServiceDataProvider::hasReachedTheMaximumGainOfToday())
     {
-        auto response = ResponseBuilder<std::string>()
+        using namespace std::string_literals;
+        auto response = ResponseBuilder<>()
                 .setCode(HttpStatusCode::k418ImATeapot)
-                .setData("has reached to the maximum amount of today")
-                .setMessage("failed")
+                .setMessage("failed: has reached to the maximum amount of today")
                 .build();
         callback(response);
 
@@ -25,10 +25,9 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
 
         if (content.empty())
         {
-            auto response = ResponseBuilder<std::string>()
-                    .setCode(HttpStatusCode::k200OK)
-                    .setData("content could not be empty")
-                    .setMessage("failed")
+            auto response = ResponseBuilder<>()
+                    .setCode(HttpStatusCode::k204NoContent)
+                    .setMessage("failed: content could not be empty")
                     .build();
             callback(response);
 
@@ -65,20 +64,19 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
         }
         else [[unlikely]]
         {
-            auto response = ResponseBuilder<decltype(affectedRows)>()
-                    .setCode(HttpStatusCode::k200OK)
-                    .setData(affectedRows)
-                    .setMessage("failed")
+            auto response = ResponseBuilder<>()
+                    .setCode(HttpStatusCode::k500InternalServerError)
+                    .setMessage("failed to insert rows")
                     .build();
             callback(response);
         }
     }
     catch (const std::exception& e)
     {
-        auto response = ResponseBuilder<std::string>()
+        using namespace std::string_literals;
+        auto response = ResponseBuilder<>()
                 .setCode(HttpStatusCode::k500InternalServerError)
-                .setData(e.what())
-                .setMessage("failed")
+                .setMessage("failed: "s + e.what())
                 .build();
         callback(response);
     }

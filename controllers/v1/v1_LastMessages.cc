@@ -37,18 +37,17 @@ LastMessages::root([[maybe_unused]] HttpRequestPtr req, std::function<void(const
         }
         else if (resultSize <= 0) [[unlikely]]
         {
-            const auto response = ResponseBuilder<std::string>()
+            using namespace std::string_literals;
+            const auto response = ResponseBuilder<>()
                     .setCode(HttpStatusCode::k500InternalServerError)
-                    .setData("")
                     .setMessage("unknown error")
                     .build();
             callback(response);
         }
         else
         {
-            const auto response = ResponseBuilder<std::string>()
+            const auto response = ResponseBuilder<>()
                     .setCode(HttpStatusCode::k500InternalServerError)
-                    .setData("")
                     .setMessage("index out of range")
                     .build();
             callback(response);
@@ -56,10 +55,10 @@ LastMessages::root([[maybe_unused]] HttpRequestPtr req, std::function<void(const
     }
     catch (const orm::DrogonDbException& e)
     {
-        auto response = ResponseBuilder<std::string>()
+        using namespace std::string_literals;
+        auto response = ResponseBuilder<>()
                 .setCode(HttpStatusCode::k500InternalServerError)
-                .setData(e.base().what())
-                .setMessage("exception occurred")
+                .setMessage("exception occurred"s + e.base().what())
                 .build();
         callback(response);
     }
