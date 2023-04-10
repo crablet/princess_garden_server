@@ -76,7 +76,7 @@ Task<> SubmitMessage::root(HttpRequestPtr req, std::function<void(const HttpResp
         using namespace std::string_literals;
         auto response = ResponseBuilder<>()
                 .setCode(HttpStatusCode::k500InternalServerError)
-                .setMessage("failed: "s + e.what())
+                .setMessage(fmt::format("failed: {}", e.what()))
                 .build();
         callback(response);
     }

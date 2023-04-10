@@ -8,6 +8,8 @@
 
 #include "glaze/glaze.hpp"
 
+#include "fmt/core.h"
+
 #include "utils/ResponseBuilder.hpp"
 #include "models/ResponseBody.hpp"
 #include "models/MessageModel.hpp"

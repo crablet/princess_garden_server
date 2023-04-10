@@ -5,6 +5,8 @@
 
 #include <drogon/HttpController.h>
 
+#include "fmt/core.h"
+
 #include "ResponseBuilder.hpp"
 
 using namespace drogon;
