@@ -19,8 +19,9 @@ public:
         auto clientPtr = app().getDbClient();
         const auto result = co_await clientPtr->execSqlCoro(
                 "SELECT SUM(gain) as total FROM rewards WHERE current_date = date(time)");
+        const auto gainTimeOfToday = result.front()["total"].as<int>();
 
-        co_return result.front()["total"].as<int>();
+        co_return gainTimeOfToday;
     }
 
     static constexpr int MAX_GAIN_OF_A_DAY = 1999;
@@ -45,8 +46,9 @@ public:
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_int_distribution<> dis(0, maxLeftGain);
+            const auto nextGain = dis(gen);
 
-            co_return dis(gen);
+            co_return nextGain;
         }
     }
 };
