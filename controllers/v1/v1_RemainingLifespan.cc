@@ -22,7 +22,7 @@ RemainingLifespan::root([[maybe_unused]] HttpRequestPtr req, std::function<void(
         using namespace std::string_literals;
         auto response = ResponseBuilder<>()
                 .setCode(HttpStatusCode::k500InternalServerError)
-                .setMessage("failed: "s + e.what())
+                .setMessage(fmt::format("exception occurred: {}", e.what()))
                 .build();
         callback(response);
     }

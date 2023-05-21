@@ -8,6 +8,8 @@
 
 #include <drogon/HttpController.h>
 
+#include "fmt/core.h"
+
 #include "ResponseBuilder.hpp"
 #include "ServiceDataProvider.hpp"
 
@@ -17,12 +19,12 @@ namespace v1
 {
 class SubmitMessage : public drogon::HttpController<SubmitMessage>
 {
-  public:
+public:
     METHOD_LIST_BEGIN
-    // use METHOD_ADD to add your custom processing function here;
-    // METHOD_ADD(SubmitMessage::get, "/{2}/{1}", Get); // path is /v1/SubmitMessage/{arg2}/{arg1}
-    // METHOD_ADD(SubmitMessage::your_method_name, "/{1}/{2}/list", Get); // path is /v1/SubmitMessage/{arg1}/{arg2}/list
-    // ADD_METHOD_TO(SubmitMessage::your_method_name, "/absolute/path/{1}/{2}/list", Get); // path is /absolute/path/{arg1}/{arg2}/list
+        // use METHOD_ADD to add your custom processing function here;
+        // METHOD_ADD(SubmitMessage::get, "/{2}/{1}", Get); // path is /v1/SubmitMessage/{arg2}/{arg1}
+        // METHOD_ADD(SubmitMessage::your_method_name, "/{1}/{2}/list", Get); // path is /v1/SubmitMessage/{arg1}/{arg2}/list
+        // ADD_METHOD_TO(SubmitMessage::your_method_name, "/absolute/path/{1}/{2}/list", Get); // path is /absolute/path/{arg1}/{arg2}/list
         ADD_METHOD_TO(SubmitMessage::root, "v1/submitMessage", Post);
 
     METHOD_LIST_END

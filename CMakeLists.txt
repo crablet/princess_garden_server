@@ -42,6 +42,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glaze::glaze)
 
 # ##############################################################################
 
+add_subdirectory(third_party/fmt EXCLUDE_FROM_ALL)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party) # 使之可以#include "fmt/core.h"
+
+# ##############################################################################
+
 aux_source_directory(controllers/v1 CTL_V1_SRC)
 aux_source_directory(filters FILTER_SRC)
 aux_source_directory(plugins PLUGIN_SRC)

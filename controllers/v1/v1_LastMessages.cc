@@ -58,7 +58,7 @@ LastMessages::root([[maybe_unused]] HttpRequestPtr req, std::function<void(const
         using namespace std::string_literals;
         auto response = ResponseBuilder<>()
                 .setCode(HttpStatusCode::k500InternalServerError)
-                .setMessage("exception occurred"s + e.base().what())
+                .setMessage(fmt::format("exception occurred: {}", e.base().what()))
                 .build();
         callback(response);
     }
